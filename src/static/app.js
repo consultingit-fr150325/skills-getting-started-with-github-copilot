@@ -12,27 +12,32 @@ document.addEventListener("DOMContentLoaded", () => {
 
       // Clear loading message
       activitiesList.innerHTML = "";
+      activitySelect.innerHTML = '<option value="">-- Select an activity --</option>';
 
       // Populate activities list
-      Object.entries(activities).forEach(([name, details]) => {
-        const activityCard = document.createElement("div");
-        activityCard.className = "activity-card";
+      activities.forEach(activity => {
+        // Create activity element
+        const activityElement = document.createElement("div");
+        activityElement.classList.add("activity");
 
-        const spotsLeft = details.max_participants - details.participants.length;
+        const activityName = document.createElement("h4");
+        activityName.textContent = activity.name;
+        activityElement.appendChild(activityName);
 
-        activityCard.innerHTML = `
-          <h4>${name}</h4>
-          <p>${details.description}</p>
-          <p><strong>Schedule:</strong> ${details.schedule}</p>
-          <p><strong>Availability:</strong> ${spotsLeft} spots left</p>
-        `;
+        const participantsList = document.createElement("ul");
+        activity.participants.forEach(participant => {
+          const participantItem = document.createElement("li");
+          participantItem.textContent = participant;
+          participantsList.appendChild(participantItem);
+        });
+        activityElement.appendChild(participantsList);
 
-        activitiesList.appendChild(activityCard);
+        activitiesList.appendChild(activityElement);
 
-        // Add option to select dropdown
+        // Add activity to the select options
         const option = document.createElement("option");
-        option.value = name;
-        option.textContent = name;
+        option.value = activity.name;
+        option.textContent = activity.name;
         activitySelect.appendChild(option);
       });
     } catch (error) {
