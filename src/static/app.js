@@ -4,18 +4,14 @@ document.addEventListener("DOMContentLoaded", () => {
   const signupForm = document.getElementById("signup-form");
   const messageDiv = document.getElementById("message");
 
-  // Function to fetch activities from API
-  async function fetchActivities() {
-    try {
-      const response = await fetch("/activities");
-      const activities = await response.json();
-
-      // Clear loading message
+  // Fetch activities from the server
+  fetch("/activities")
+    .then(response => response.json())
+    .then(data => {
       activitiesList.innerHTML = "";
       activitySelect.innerHTML = '<option value="">-- Select an activity --</option>';
 
-      // Populate activities list
-      activities.forEach(activity => {
+      data.forEach(activity => {
         // Create activity element
         const activityElement = document.createElement("div");
         activityElement.classList.add("activity");
@@ -40,11 +36,11 @@ document.addEventListener("DOMContentLoaded", () => {
         option.textContent = activity.name;
         activitySelect.appendChild(option);
       });
-    } catch (error) {
-      activitiesList.innerHTML = "<p>Failed to load activities. Please try again later.</p>";
+    })
+    .catch(error => {
       console.error("Error fetching activities:", error);
-    }
-  }
+      activitiesList.innerHTML = "<p>Error loading activities.</p>";
+    });
 
   // Handle form submission
   signupForm.addEventListener("submit", async (event) => {
